@@ -30,7 +30,7 @@ def send_message(message, outgoing_webhook, attachment_text=None):
 @app.route("/", methods=["GET", "POST"])
 def receive_message():
     if request.method == 'POST':
-        if request.form.get("token") == "MhkKbROPRZkBAJjKXUcpkuwCRkcWnbNX7msOgnRq5fgOmNbvXcPsIZ2j5eV00SeB":
+        if request.form.get("token") == incoming_webhook_url1:
             message = request.form["text"]
             username = request.form["username"]
             response = f"The message {message} has not been defined."
@@ -56,7 +56,9 @@ def receive_message():
 def start_flask_app():
     app.run(host='0.0.0.0', port=6039)
 
-def process_messages(instance, outgoing_webhook):
+def process_messages(instance, outgoing_webhook, incoming_webhook_url):
+    global incoming_webhook_url1
+    incoming_webhook_url1 = incoming_webhook_url
     while True:
         try:
             alias, message, username = message_queue.get(block=True, timeout=1)
@@ -80,8 +82,8 @@ def process_messages(instance, outgoing_webhook):
             # No messages in the queue, wait for the next one
             pass
 
-def run_bot(instance, outgoing_webhook):
+def run_bot(instance, outgoing_webhook, incomming_token):
     flask_thread = threading.Thread(target=start_flask_app)
-    message_thread = threading.Thread(target=process_messages, args=(instance, outgoing_webhook))
+    message_thread = threading.Thread(target=process_messages, args=(instance, outgoing_webhook, incomming_token))
     flask_thread.start()
     message_thread.start()
