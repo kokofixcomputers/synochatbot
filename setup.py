@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='synochat',
+    name='synochatbot',
     version='1.0',
     author='kokofixcomputers',
     packages=find_packages(),
